@@ -6,27 +6,17 @@
 <title>wik.sh — Wikipedia Terminal</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 :root{--bg:#fff;--fg:#000;--dim:#999;--line:#ddd;--accent:#05b;--accent-hover:#07d;--font:'Courier New',monospace;--fs:14px;--lh:1.6;--pad:12px 20px;--radius:0px;--bar-bg:#000;--bar-fg:#fff;--card-bg:#f5f5f5;--card-border:#e0e0e0;--input-bg:#fafafa;--input-border:#ccc}
 html,body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:var(--fs);line-height:var(--lh);overflow:hidden}
-
-/* Splash */
 #splash{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:opacity .6s}
-#splash.fade{opacity:0;pointer-events:none}
-#splash.hide{display:none}
+#splash.fade{opacity:0;pointer-events:none}#splash.hide{display:none}
 #splash .logo{font-size:clamp(32px,8vw,80px);font-weight:800;letter-spacing:-4px;opacity:0;animation:fadeIn 1s .3s forwards;color:var(--fg)}
 #splash .sub{color:var(--dim);font-size:clamp(11px,2vw,15px);margin-top:8px;opacity:0;animation:fadeIn .8s .7s forwards}
 #splash .hint{font-size:clamp(10px,1.5vw,13px);margin-top:28px;opacity:0;animation:fadeIn .6s 1.4s forwards}
 #splash .bar{width:min(240px,50vw);height:2px;background:var(--line);margin-top:20px;border-radius:1px;overflow:hidden;opacity:0;animation:fadeIn .3s .4s forwards}
 #splash .bar div{height:100%;width:0;background:var(--fg);animation:fillBar 1.2s ease-out .5s forwards}
-@keyframes fadeIn{to{opacity:1}}
-@keyframes fillBar{to{width:100%}}
-
-/* Layout */
-#app{display:none;flex-direction:column;height:100vh}
-#app.active{display:flex}
-
-/* Title Bar */
+@keyframes fadeIn{to{opacity:1}}@keyframes fillBar{to{width:100%}}
+#app{display:none;flex-direction:column;height:100vh}#app.active{display:flex}
 #bar{background:var(--bar-bg);color:var(--bar-fg);padding:5px 14px;font-size:12px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;font-family:'Segoe UI',Arial,sans-serif}
 #bar .l{display:flex;align-items:center;gap:8px}
 #bar .l .d{width:10px;height:10px;border-radius:50%;background:#555;display:inline-block}
@@ -34,183 +24,145 @@ html,body{height:100%;background:var(--bg);color:var(--fg);font-family:var(--fon
 #bar .r button{background:none;border:none;color:var(--bar-fg);cursor:pointer;font-size:11px;padding:2px 8px;border-radius:3px;transition:background .15s;opacity:.7}
 #bar .r button:hover{background:rgba(255,255,255,.15);opacity:1}
 #bar .r .s{width:1px;height:14px;background:rgba(255,255,255,.2)}
-
-/* Screen */
 #screen{flex:1;overflow-y:auto;padding:var(--pad);scroll-behavior:smooth;overscroll-behavior:contain}
-#screen::-webkit-scrollbar{width:5px}
-#screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
-#screen::-webkit-scrollbar-thumb:hover{background:var(--dim)}
-
-/* Lines */
-.l{white-space:pre-wrap;word-break:break-word;min-height:1.5em;padding:1px 0;transition:color .15s}
-.l+.l{margin-top:0}
-.l.d{color:var(--dim)}
-.l.s{border-bottom:1px solid var(--line);margin:6px 0}
-
-/* Search Result */
-.l.r{margin:6px 0 4px;border-left:3px solid var(--accent);padding:10px 14px;background:var(--card-bg);border-radius:var(--radius)}
+#screen::-webkit-scrollbar{width:5px}#screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.l{white-space:pre-wrap;word-break:break-word;min-height:1.5em;padding:1px 0}
+.l.d{color:var(--dim)}.l.s{border-bottom:1px solid var(--line);margin:6px 0}
+.l.err{color:#c00}.l.ok{color:#090}
+.l.r{margin:6px 0 4px;border-left:3px solid var(--accent);padding:10px 14px;background:var(--card-bg)}
 .l.r .rt{font-size:calc(var(--fs) + 2px);font-weight:600;color:var(--accent);cursor:pointer}
-.l.r .rt:hover{color:var(--accent-hover);text-decoration:underline}
+.l.r .rt:hover{text-decoration:underline}
 .l.r .ru{color:var(--dim);font-size:calc(var(--fs) - 2px);margin:1px 0;word-break:break-all}
-.l.r .rs{color:var(--fg);font-size:var(--fs);margin-top:3px;opacity:.85}
+.l.r .rs{margin-top:3px;opacity:.85}
 .l.r .rm{color:var(--dim);font-size:calc(var(--fs) - 3px);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
-.l.r .rm span{cursor:pointer}
-.l.r .rm span:hover{color:var(--accent)}
-
-/* Article */
+.l.r .rm span{cursor:pointer}.l.r .rm span:hover{color:var(--accent)}
 .l.a{margin:4px 0}
 .l.a .ah1{font-size:calc(var(--fs) + 8px);font-weight:700;margin:18px 0 4px}
-.l.a .ah2{font-size:calc(var(--fs) + 4px);font-weight:600;margin:14px 0 3px;color:var(--fg);opacity:.9}
-.l.a .ah3{font-size:calc(var(--fs) + 1px);font-weight:600;margin:10px 0 2px;color:var(--fg);opacity:.8}
-.l.a .at{color:var(--fg);opacity:.85;margin-bottom:4px}
-.l.a .al{color:var(--accent);cursor:pointer;text-decoration:none;display:inline;margin:0;transition:color .15s}
-.l.a .al:hover{color:var(--accent-hover);text-decoration:underline}
+.l.a .ah2{font-size:calc(var(--fs) + 4px);font-weight:600;margin:14px 0 3px}
+.l.a .ah3{font-size:calc(var(--fs) + 1px);font-weight:600;margin:10px 0 2px}
+.l.a .at{opacity:.85;margin-bottom:4px}
+.l.a .al{color:var(--accent);cursor:pointer}
+.l.a .al:hover{text-decoration:underline}
 .l.a .aimg{margin:8px 0;max-width:100%}
-.l.a .aimg img{max-width:100%;max-height:400px;border-radius:var(--radius);border:1px solid var(--line);background:var(--card-bg)}
-.l.a .aimg .caption{color:var(--dim);font-size:calc(var(--fs) - 2px);margin-top:2px}
+.l.a .aimg img{max-width:100%;max-height:400px;border:1px solid var(--line);background:var(--card-bg)}
 .l.a .asec{color:var(--dim);font-size:calc(var(--fs) - 2px);margin:10px 0 4px;font-weight:600}
-.l.a .ainfo{border-left:2px solid var(--line);padding:6px 0 6px 12px;margin:6px 0;background:var(--card-bg);border-radius:0 var(--radius) var(--radius) 0}
-
-/* Commands Grid */
+.l.a .ainfo{border-left:2px solid var(--line);padding:6px 0 6px 12px;margin:6px 0;background:var(--card-bg)}
 .l.cmdgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:4px 20px;margin:8px 0}
 .l.cmdgrid .cg{display:flex;gap:6px;padding:3px 0}
-.l.cmdgrid .cgk{color:var(--accent);font-weight:600;white-space:nowrap;font-family:var(--font)}
+.l.cmdgrid .cgk{color:var(--accent);font-weight:600;white-space:nowrap}
 .l.cmdgrid .cgd{color:var(--dim)}
-
-/* Menu */
-.l.mitem{padding:3px 8px;cursor:pointer;border-radius:3px;transition:background .1s;display:flex;gap:8px;align-items:center}
-.l.mitem:hover{background:var(--card-bg)}
-.l.mitem .mn{color:var(--accent);font-weight:600;min-width:100px}
-.l.mitem .md{color:var(--dim);font-size:calc(var(--fs) - 1px)}
-
-/* Tags */
-.tag{display:inline-block;padding:1px 8px;font-size:calc(var(--fs) - 3px);background:var(--card-bg);border:1px solid var(--line);border-radius:3px;margin:1px 3px;cursor:pointer;color:var(--dim);transition:all .15s}
+.tag{display:inline-block;padding:1px 8px;font-size:calc(var(--fs) - 3px);background:var(--card-bg);border:1px solid var(--line);margin:1px 3px;cursor:pointer;color:var(--dim)}
 .tag:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-
-/* Input */
+.dl-btn{display:inline-block;padding:3px 12px;background:var(--accent);color:#fff;cursor:pointer;font-size:calc(var(--fs) - 2px);margin:2px 0;border-radius:3px}
+.dl-btn:hover{opacity:.8}
 #inputArea{display:flex;align-items:center;padding:6px 16px 10px;flex-shrink:0;background:var(--bg);border-top:1px solid var(--line)}
-#prompt{color:var(--accent);font-size:var(--fs);margin-right:8px;white-space:nowrap;font-weight:600}
-#cmd{flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:var(--radius);color:var(--fg);font-family:var(--font);font-size:var(--fs);padding:8px 12px;outline:none;transition:border-color .2s}
+#prompt{color:var(--accent);margin-right:8px;white-space:nowrap;font-weight:600}
+#cmd{flex:1;background:var(--input-bg);border:1px solid var(--input-border);color:var(--fg);font-family:var(--font);font-size:var(--fs);padding:8px 12px;outline:none}
 #cmd:focus{border-color:var(--accent)}
-#cmd::placeholder{color:var(--dim)}
-
-/* Suggestions */
-#suggest{position:absolute;bottom:52px;left:16px;right:16px;max-height:240px;overflow-y:auto;background:var(--bg);border:1px solid var(--line);display:none;z-index:50;border-radius:var(--radius);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+#suggest{position:absolute;bottom:52px;left:16px;right:16px;max-height:240px;overflow-y:auto;background:var(--bg);border:1px solid var(--line);display:none;z-index:50}
 #suggest.active{display:block}
-#suggest .si{padding:5px 12px;font-size:var(--fs);cursor:pointer;color:var(--fg);transition:background .08s}
+#suggest .si{padding:5px 12px;cursor:pointer}
 #suggest .si:hover,#suggest .si.hl{background:var(--card-bg);color:var(--accent)}
-
-/* Settings Panel */
-#settings{position:fixed;top:0;right:-420px;width:400px;max-width:92vw;height:100%;background:var(--bg);border-left:1px solid var(--line);z-index:200;transition:right .35s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;box-shadow:-4px 0 30px rgba(0,0,0,.06)}
+#settings{position:fixed;top:0;right:-420px;width:400px;max-width:92vw;height:100%;background:var(--bg);border-left:1px solid var(--line);z-index:200;transition:right .35s;overflow-y:auto}
 #settings.open{right:0}
 #settings .sh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 #settings .sh h3{font-size:16px;font-weight:700}
-#settings .sh button{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:0 4px}
-#settings .sh button:hover{color:var(--fg)}
-#settings .sb{padding:16px 20px;flex:1;overflow-y:auto}
+#settings .sb{padding:16px 20px}
 #settings .sg{margin-bottom:20px}
-#settings .sg h4{font-size:13px;color:var(--dim);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+#settings .sg h4{font-size:13px;color:var(--dim);margin-bottom:8px;font-weight:600;text-transform:uppercase}
 #settings .sf{margin-bottom:14px}
 #settings .sf label{display:block;font-size:12px;color:var(--dim);margin-bottom:3px}
-#settings .sf input[type=color]{width:100%;height:36px;border:1px solid var(--line);border-radius:var(--radius);cursor:pointer;padding:2px;background:var(--bg)}
+#settings .sf input[type=color]{width:100%;height:36px;border:1px solid var(--line);cursor:pointer;padding:2px}
 #settings .sf input[type=range]{width:100%;accent-color:var(--accent)}
-#settings .sf select{width:100%;padding:6px 8px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:var(--radius);color:var(--fg);font-size:13px;cursor:pointer;outline:none;font-family:var(--font)}
-#settings .sf select:focus{border-color:var(--accent)}
+#settings .sf select{width:100%;padding:6px 8px;background:var(--input-bg);border:1px solid var(--input-border);color:var(--fg);font-size:13px}
 #settings .sf .val{font-size:11px;color:var(--dim);text-align:right;margin-top:1px}
-#settings .sreset{width:100%;padding:8px;background:var(--fg);color:var(--bg);border:none;border-radius:var(--radius);font-size:13px;cursor:pointer;font-weight:600;transition:opacity .15s}
-#settings .sreset:hover{opacity:.8}
-
-/* Overlay */
+#settings .sreset{width:100%;padding:8px;background:var(--fg);color:var(--bg);border:none;font-size:13px;cursor:pointer;font-weight:600}
 #overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.3);z-index:199;display:none}
 #overlay.open{display:block}
+#toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--bar-bg);color:var(--bar-fg);padding:8px 20px;border-radius:6px;font-size:13px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
 </style>
 </head>
 <body>
-
-<div id="splash">
-  <div class="logo">wik.sh</div>
-  <div class="sub">Wikipedia terminal — infinite knowledge at your fingertips</div>
-  <div class="bar"><div></div></div>
-  <div class="hint">click anywhere to enter</div>
-</div>
-
-<div id="app">
-  <div id="bar">
-    <div class="l"><span class="d"></span> wik.sh — wikipedia terminal</div>
-    <div class="r">
-      <button onclick="cmdSettings()" title="Settings">&#9881;</button>
-      <span class="s"></span>
-      <button onclick="cmdRandom()" title="Random article">&#8635;</button>
-      <button onclick="cmdClear()" title="Clear">&#9744;</button>
-      <span class="s"></span>
-      <button onclick="reboot()" title="Exit">&#10005;</button>
-    </div>
-  </div>
-  <div id="screen"></div>
-  <div id="suggest"></div>
-  <div id="inputArea">
-    <span id="prompt">$</span>
-    <input id="cmd" type="text" placeholder="type 'help' to start, or just type anything to search" autofocus spellcheck="false" autocomplete="off">
-  </div>
-</div>
-
+<div id="splash"><div class="logo">wik.sh</div><div class="sub">Wikipedia terminal — knowledge at your fingertips</div><div class="bar"><div></div></div><div class="hint">click anywhere to enter</div></div>
+<div id="app"><div id="bar"><div class="l"><span class="d"></span> wik.sh — wikipedia terminal</div><div class="r"><button onclick="cmdSettings()" title="Settings">&#9881;</button><span class="s"></span><button onclick="cmdRandom()" title="Random">&#8635;</button><button onclick="cmdBookmarks()" title="Bookmarks">&#9733;</button><button onclick="cmdClear()" title="Clear">&#9744;</button><span class="s"></span><button onclick="reboot()" title="Exit">&#10005;</button></div></div><div id="screen"></div><div id="suggest"></div><div id="inputArea"><span id="prompt">$</span><input id="cmd" type="text" placeholder="type 'help' to start, or just type anything to search" autofocus spellcheck="false" autocomplete="off"></div></div>
 <div id="overlay" onclick="closeSettings()"></div>
-<div id="settings">
-  <div class="sh">
-    <h3>Settings</h3>
-    <button onclick="closeSettings()">&times;</button>
-  </div>
-  <div class="sb" id="settingsBody"></div>
-</div>
+<div id="settings"><div class="sh"><h3>Settings</h3><button onclick="closeSettings()">&times;</button></div><div class="sb" id="settingsBody"></div></div>
+<div id="toast"></div>
 
 <script>
-// ---- State ----
-const MAX_HIST=500;const PER_PAGE=12;
-let lang='en';let cmdHistory=[],histIdx=0,searchResults=[],searchQuery='',searchOffset=0,searchTotal=0,currentArticle=null;
+var MAX_HIST=500,PER_PAGE=12;
+var lang='en',cmdHistory=[],histIdx=0,searchResults=[],searchQuery='',searchOffset=0,searchTotal=0,currentArticle=null,currentArticleFull=null,currentFindResults=[];
 
-const screen=document.getElementById('screen');const cmd=document.getElementById('cmd');const suggest=document.getElementById('suggest');const splash=document.getElementById('splash');
+var screenEl=document.getElementById('screen'),cmdEl=document.getElementById('cmd'),suggestEl=document.getElementById('suggest'),splashEl=document.getElementById('splash'),toastEl=document.getElementById('toast');
 
-// ---- API ----
 function api(action,params){
   params=Object.assign({format:'json',origin:'*',action:action},params);
   return fetch('https://'+lang+'.wikipedia.org/w/api.php?'+new URLSearchParams(params))
-    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
 }
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// ---- Storage ----
-const STORAGE_KEY='wikish_settings';
-const DEFAULTS={bg:'#ffffff',fg:'#000000',dim:'#999999',accent:'#0055bb',accentHover:'#0077dd',
-  line:'#dddddd',cardBg:'#f5f5f5',cardBorder:'#e0e0e0',inputBg:'#fafafa',inputBorder:'#cccccc',
-  barBg:'#000000',barFg:'#ffffff',font:'Courier New, monospace',fs:'14',lh:'1.6',
-  padX:'20',padY:'12',radius:'0'};
+function toastMsg(msg,dur){
+  toastEl.textContent=msg;toastEl.classList.add('show');
+  clearTimeout(toastEl._t);toastEl._t=setTimeout(function(){toastEl.classList.remove('show')},dur||2500);
+}
+
+var STORAGE_KEY='wikish_settings',BOOKMARKS_KEY='wikish_bookmarks';
+var DEFAULTS={bg:'#ffffff',fg:'#000000',dim:'#999999',accent:'#0055bb',accentHover:'#0077dd',line:'#dddddd',cardBg:'#f5f5f5',cardBorder:'#e0e0e0',inputBg:'#fafafa',inputBorder:'#cccccc',barBg:'#000000',barFg:'#ffffff',font:'Courier New, monospace',fs:'14',lh:'1.6',padX:'20',padY:'12',radius:'0'};
 
 function loadSettings(){
-  try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));return s?Object.assign({},DEFAULTS,s):Object.assign({},DEFAULTS)}
+  try{var s=JSON.parse(localStorage.getItem(STORAGE_KEY));return s?Object.assign({},DEFAULTS,s):Object.assign({},DEFAULTS)}
   catch(e){return Object.assign({},DEFAULTS)}}
 function saveSettings(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
-let SETTINGS=loadSettings();
+var SETTINGS=loadSettings();
 
 function applySettings(s){
-  const root=document.documentElement;
-  root.style.setProperty('--bg',s.bg);root.style.setProperty('--fg',s.fg);root.style.setProperty('--dim',s.dim);
-  root.style.setProperty('--accent',s.accent);root.style.setProperty('--accent-hover',s.accentHover);
-  root.style.setProperty('--line',s.line);root.style.setProperty('--card-bg',s.cardBg);root.style.setProperty('--card-border',s.cardBorder);
-  root.style.setProperty('--input-bg',s.inputBg);root.style.setProperty('--input-border',s.inputBorder);
-  root.style.setProperty('--bar-bg',s.barBg);root.style.setProperty('--bar-fg',s.barFg);
-  root.style.setProperty('--font',s.font);root.style.setProperty('--fs',s.fs+'px');
-  root.style.setProperty('--lh',s.lh);root.style.setProperty('--pad',s.padY+'px '+s.padX+'px');
-  root.style.setProperty('--radius',s.radius+'px');
+  var r=document.documentElement.style;
+  r.setProperty('--bg',s.bg);r.setProperty('--fg',s.fg);r.setProperty('--dim',s.dim);
+  r.setProperty('--accent',s.accent);r.setProperty('--accent-hover',s.accentHover);
+  r.setProperty('--line',s.line);r.setProperty('--card-bg',s.cardBg);r.setProperty('--card-border',s.cardBorder);
+  r.setProperty('--input-bg',s.inputBg);r.setProperty('--input-border',s.inputBorder);
+  r.setProperty('--bar-bg',s.barBg);r.setProperty('--bar-fg',s.barFg);
+  r.setProperty('--font',s.font);r.setProperty('--fs',s.fs+'px');
+  r.setProperty('--lh',s.lh);r.setProperty('--pad',s.padY+'px '+s.padX+'px');
+  r.setProperty('--radius',s.radius+'px');
+}
+
+function getBookmarks(){
+  try{return JSON.parse(localStorage.getItem(BOOKMARKS_KEY))||[]}
+  catch(e){return []}}
+function saveBookmarks(b){localStorage.setItem(BOOKMARKS_KEY,JSON.stringify(b))}
+
+function downloadBlob(content,filename,mime){
+  var blob=new Blob([content],{type:mime});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url)},1000);
+}
+
+function downloadUrl(url,fname){
+  var a=document.createElement('a');
+  a.href=url;a.download=fname||url.split('/').pop();
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+}
+
+function sanitize(s){
+  return s.replace(/[<>:\x22\/\\\\|?*]/g,'_').replace(/\s+/g,'_').substring(0,200);
 }
 
 // ---- Boot ----
 function boot(){
   applySettings(SETTINGS);
-  splash.classList.add('fade');
-  setTimeout(()=>{splash.classList.add('hide');document.getElementById('app').classList.add('active');cmd.focus()},600);
-  setTimeout(()=>{
-    w('wik.sh v1.0 — type "help" for commands, "random" for a random article.',{d:true});
+  splashEl.classList.add('fade');
+  setTimeout(function(){splashEl.classList.add('hide');document.getElementById('app').classList.add('active');cmdEl.focus()},600);
+  setTimeout(function(){
+    w('Type "help" for commands, "random" for a random article.',{d:true});
     line();
     fetchRandom();
   },900);
@@ -219,29 +171,30 @@ function boot(){
 
 function reboot(){
   document.getElementById('app').classList.remove('active');
-  splash.classList.remove('fade','hide');
-  searchResults=[];currentArticle=null;cmdHistory=[];histIdx=0;
-  screen.innerHTML='';cmd.value='';
+  splashEl.classList.remove('fade','hide');
+  searchResults=[];currentArticle=null;currentArticleFull=null;currentFindResults=[];cmdHistory=[];histIdx=0;
+  screenEl.innerHTML='';cmdEl.value='';
 }
 
 // ---- Screen ----
-function w(text,opts={}){
-  const el=document.createElement('div');el.className='l';
+function w(text,opts){
+  opts=opts||{};
+  var el=document.createElement('div');el.className='l';
   if(opts.d)el.classList.add('d');if(opts.r)el.classList.add('r');
   if(opts.a)el.classList.add('a');if(opts.s)el.classList.add('s');
-  if(opts.e){el.classList.add('d');el.style.color='#c00'}
+  if(opts.e)el.classList.add('err');
+  if(opts.ok)el.classList.add('ok');
   el.innerHTML=text;
-  screen.appendChild(el);screen.scrollTop=screen.scrollHeight;
+  screenEl.appendChild(el);screenEl.scrollTop=screenEl.scrollHeight;
   return el;
 }
 function line(){w('<div class="s"></div>',{s:true})}
-function clearScr(){screen.innerHTML='';suggest.classList.remove('active')}
+function clearScr(){screenEl.innerHTML='';suggestEl.classList.remove('active')}
 
-// ---- Result rendering ----
 function writeResult(r,idx){
-  const title=r.title||'';const pageUrl='https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(title.replace(/ /g,'_'));
-  const snip=r.snippet||'';const ts=r.timestamp?r.timestamp.slice(0,10):'';
-  const size=r.size?fmtSize(r.size):'';const wc=r.wordcount?r.wordcount.toLocaleString()+' words':'';
+  var title=r.title||'',pageUrl='https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(title.replace(/ /g,'_'));
+  var snip=r.snippet||'',ts=r.timestamp?r.timestamp.slice(0,10):'';
+  var size=r.size?fmtSize(r.size):'',wc=r.wordcount?r.wordcount.toLocaleString()+' words':'';
   w('<div class="r">'+
     '<div class="rt" onclick="runCmd(\'open '+esc(title.replace(/'/g,"\\'"))+'\')">'+esc(title)+'</div>'+
     '<div class="ru">'+esc(pageUrl)+'</div>'+
@@ -253,11 +206,24 @@ function writeResult(r,idx){
     '</div></div>',{r:true});
 }
 
-function fmtSize(b){const kb=b/1024;return kb<1024?kb.toFixed(0)+'KB':(kb/1024).toFixed(1)+'MB'}
+function fmtSize(b){var kb=b/1024;return kb<1024?kb.toFixed(0)+'KB':(kb/1024).toFixed(1)+'MB'}
+
+function resolveTitle(i){
+  var m=i.match(/^#?(\d+)$/);
+  if(m&&searchResults.length){var idx=parseInt(m[1])-1;if(idx>=0&&idx<searchResults.length)return searchResults[idx].title}
+  return i;
+}
+
+function linkify(text){
+  return text.replace(/\[\[([^\]]+)\]\]/g,function(m,t){
+    var parts=t.split('|'),title=parts[0],label=parts[1]||title;
+    return '<span class="al" onclick="runCmd(\'open '+esc(title.replace(/'/g,"\\'"))+'\')">'+esc(label)+'</span>';
+  });
+}
 
 // ---- Commands ----
 function process(input){
-  const parts=input.trim().split(/\s+/);const c=parts[0].toLowerCase();const a=parts.slice(1).join(' ');
+  var parts=input.trim().split(/\s+/),c=parts[0].toLowerCase(),a=parts.slice(1).join(' ');
   if(!input.trim())return;
   addHist(input);
   if(c==='help'||c==='h')cmdHelp();
@@ -281,48 +247,59 @@ function process(input){
   else if(c==='featured')cmdFeatured();
   else if(c==='settings'||c==='prefs')cmdSettings();
   else if(c==='about')cmdAbout();
-  else if(c==='help')cmdHelp();
+  else if(c==='download'||c==='dl')cmdDownload(a);
+  else if(c==='dlhtml')cmdDownloadHtml(a);
+  else if(c==='dlmd')cmdDownloadMarkdown(a);
+  else if(c==='dlimg')cmdDownloadImages(a);
+  else if(c==='save'||c==='bookmark')cmdSave(a);
+  else if(c==='bookmarks'||c==='bm')cmdBookmarks();
+  else if(c==='remove'||c==='rmbm')cmdRemoveBm(a);
+  else if(c==='stats')cmdStats(a);
+  else if(c==='toc')cmdToc(a);
+  else if(c==='find')cmdFind(a);
+  else if(c==='export')cmdExport();
   else if(!isNaN(Number(c))&&c.length<4&&searchResults.length){
-    const idx=parseInt(c)-1;if(idx>=0&&idx<searchResults.length)cmdOpen(searchResults[idx].title);
+    var idx=parseInt(c)-1;if(idx>=0&&idx<searchResults.length)cmdOpen(searchResults[idx].title);
     else w('Result #'+c+' not found.',{d:true});
   }
-  else if(c.startsWith('#')){
-    const idx=parseInt(c.slice(1))-1;if(idx>=0&&idx<searchResults.length)cmdOpen(searchResults[idx].title);
+  else if(c.charAt(0)==='#'){
+    var idx=parseInt(c.slice(1))-1;if(idx>=0&&idx<searchResults.length)cmdOpen(searchResults[idx].title);
     else w('Result #'+c.slice(1)+' not found.',{d:true});
   }
   else cmdSearch(input);
-  suggest.classList.remove('active');
+  suggestEl.classList.remove('active');
 }
 
 // ---- Help ----
 function cmdHelp(){
   clearScr();
   w('<div class="ah1">wik.sh — Commands</div>');
-  w('<div class="at" style="margin-bottom:12px">Click any command to run it. Click article titles to open them. Everything is inline — no page reloads.</div>');
-  const cmds=[
-    ['search <q> / s','Full-text search on Wikipedia'],
-    ['open <t> / o','Open an article (clickable inline)'],
-    ['read <t>','Read full article body'],
-    ['random / r','Random article'],
-    ['more / m','Next page of search results'],
-    ['back','Return to search results'],
-    ['images <t>','Images in an article'],
-    ['links <t>','Internal links from article'],
-    ['categories <t>','Categories of article'],
-    ['suggestions <q>','Autocomplete suggestions'],
-    ['geosearch <lat> <lon>','Search articles near coordinates'],
-    ['feed','Random collection of articles'],
-    ['featured','Today\'s featured article'],
-    ['top','Today\'s most-read articles'],
-    ['related / rel','Related to current article'],
-    ['lang <code>','Change language (en,zh,ja,de,fr...)'],
-    ['history / hist','Command history'],
-    ['settings / prefs','Customize colors & appearance'],
-    ['about','About wik.sh'],
-    ['clear / cls','Clear screen'],
-  ];
-  w('<div class="cmdgrid">'+cmds.map(([c,d])=>'<div class="cg"><span class="cgk" onclick="runCmd(\''+c.split(' ')[0]+'\')">'+esc(c)+'</span><span class="cgd">— '+esc(d)+'</span></div>').join('')+'</div>');
-  w('<div class="at" style="margin-top:12px">Tip: Just type anything to search. Click #[num] or type #<num> to open a result. Arrow keys for history.</div>');
+  w('<div class="at" style="margin-bottom:12px">Click any command to run it. Click article titles to open them.</div>');
+  var cmds=[
+    ['search <q> / s','Full-text search'],['open <t> / o','Open article inline'],
+    ['read <t>','Read full article body'],['random / r','Random article'],
+    ['more / m','Next search page'],['back','Return to search results'],
+    ['images <t>','Images in article'],['links <t>','Internal links'],
+    ['categories <t>','Categories'],['suggestions <q>','Autocomplete'],
+    ['geosearch <lat> <lon>','Near coordinates'],['feed','Random collection'],
+    ['featured','Featured article'],['top','Most-read today'],
+    ['related / rel','Related articles'],['lang <code>','Change language'],
+    ['history / hist','Command history'],['settings / prefs','Customize appearance'],
+    ['about','About'],['clear / cls','Clear screen'],
+    ['','Download & Export --'],
+    ['download <t> / dl','Download as .txt'],['dlhtml <t>','Download as .html'],
+    ['dlmd <t>','Download as Markdown'],['dlimg <t>','Download all images'],
+    ['export','Export bookmarks as JSON'],
+    ['','Bookmarks --'],
+    ['save <t> / bookmark','Save to bookmarks'],['bookmarks / bm','Show bookmarks'],
+    ['remove <n> / rmbm','Remove bookmark'],
+    ['','Analysis --'],
+    ['stats <t>','Article statistics'],['toc <t>','Table of contents'],
+    ['find <text>','Search within article']];
+  w('<div class="cmdgrid">'+cmds.map(function(cd){
+    return cd[0]?'<div class="cg"><span class="cgk" onclick="runCmd(\''+cd[0].split(' ')[0]+'\')">'+esc(cd[0])+'</span><span class="cgd">-- '+esc(cd[1])+'</span></div>':'<div class="cg" style="grid-column:1/-1;color:var(--dim);font-weight:600;margin-top:4px">'+esc(cd[1])+'</div>'
+  }).join('')+'</div>');
+  w('<div class="at" style="margin-top:12px">Tip: Just type anything to search. Arrow keys for history. Click links to open inline.</div>');
 }
 
 // ---- Search ----
@@ -333,23 +310,21 @@ function cmdSearch(q){
   doSearch(q,0);
 }
 function doSearch(q,offset,append){
-  api('query',{list:'search',srsearch:q,srlimit:PER_PAGE,sroffset:offset,
-    srprop:'snippet|titlesnippet|timestamp|size|wordcount|redirecttitle',
-    srwhat:'text'}).then(d=>{
-    const qr=d.query||{};const results=qr.search||[];
+  api('query',{list:'search',srsearch:q,srlimit:PER_PAGE,sroffset:offset,srprop:'snippet|titlesnippet|timestamp|size|wordcount',srwhat:'text'}).then(function(d){
+    var qr=d.query||{},results=qr.search||[];
     searchTotal=qr.searchinfo&&qr.searchinfo.totalhits||0;
     if(!append)searchOffset=0;searchOffset=offset+results.length;
     if(!append)searchResults=results;else searchResults=searchResults.concat(results);
     renderSearch(results,q,offset);
     if(results.length){
-      const p=Math.floor(offset/PER_PAGE)+1;const tp=Math.ceil(searchTotal/PER_PAGE);
-      w('Page '+p+'/'+tp+' ('+searchTotal.toLocaleString()+' total) — <span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'more\')">type "more" for next page</span>',{d:true});
+      var p=Math.floor(offset/PER_PAGE)+1,tp=Math.ceil(searchTotal/PER_PAGE);
+      w('Page '+p+'/'+tp+' ('+searchTotal.toLocaleString()+' total) -- <span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'more\')">type "more" for next page</span>',{d:true});
     } else if(offset===0){w('No results for "'+esc(q)+'".',{d:true})}
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
 function renderSearch(results,q,offset){
-  if(offset===0){line();w('Search: "'+esc(q)+'" — '+searchTotal.toLocaleString()+' results',{d:true});line()}
-  for(let i=0;i<results.length;i++)writeResult(results[i],offset+i+1);
+  if(offset===0){line();w('Search: "'+esc(q)+'" -- '+searchTotal.toLocaleString()+' results',{d:true});line()}
+  for(var i=0;i<results.length;i++)writeResult(results[i],offset+i+1);
 }
 
 // ---- Open Article ----
@@ -360,429 +335,610 @@ function cmdOpen(t){
   Promise.all([
     api('query',{prop:'extracts|pageimages|info',exintro:1,explaintext:1,titles:t,inprop:'url',pithumbsize:600}),
     api('query',{prop:'images',titles:t,imlimit:20}),
-    api('query',{prop:'categories',titles:t,cllimit:10})
-  ]).then(([data,imgData,catData])=>{
-    const pages=data.query&&data.query.pages||{};const id=Object.keys(pages)[0];
+    api('query',{prop:'categories',titles:t,cllimit:10}),
+    api('query',{prop:'pageprops',titles:t,ppprop:'wikibase_item'})
+  ]).then(function(res){
+    var data=res[0],imgData=res[1],catData=res[2],ppData=res[3];
+    var pages=data.query&&data.query.pages||{},id=Object.keys(pages)[0];
     if(!id||id==='-1'){w('Article not found: "'+esc(t)+'"',{e:true});return}
-    const p=pages[id];const ext=p.extract||'';
-    const img=p.thumbnail&&p.thumbnail.source||'';
-    const url=p.canonicalurl||'https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(t.replace(/ /g,'_'));
+    var p=pages[id],ext=p.extract||'',img=p.thumbnail&&p.thumbnail.source||'';
+    var url=p.canonicalurl||'https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(t.replace(/ /g,'_'));
     currentArticle=p;
     line();
-    // Title
     w('<div class="a"><div class="ah1">'+esc(p.title)+'</div></div>');
-    // Image
     if(img)w('<div class="a"><div class="aimg"><img src="'+esc(img)+'" alt="'+esc(p.title)+'" loading="lazy"></div></div>');
-    // Metadata tags
-    const tags=[];
-    const imgs=imgData.query&&imgData.query.pages&&imgData.query.pages[id]&&imgData.query.pages[id].images||[];
-    const cats=catData.query&&catData.query.pages&&catData.query.pages[id]&&catData.query.pages[id].categories||[];
-    if(ext.length)tags.push('&#128196; '+ext.length.toLocaleString()+' chars');
-    if(imgs.length)tags.push('&#128247; '+imgs.length+' images');
-    if(cats.length)tags.push('&#128193; '+cats.length+' categories');
-    tags.push('<span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'related\')">&#128279; Related</span>');
-    tags.push('<span style="cursor:pointer;color:var(--accent)" onclick="window.open(\''+esc(url)+'\',\'_blank\')">&#8599; Open in Wikipedia</span>');
-    w('<div class="a"><div class="ainfo">'+tags.join(' &middot; ')+'</div></div>');
-    // Extract sections
-    const sections=ext.split('\n').filter(Boolean);
+    var tags=[];
+    var imgs=imgData.query&&imgData.query.pages&&imgData.query.pages[id]&&imgData.query.pages[id].images||[];
+    var cats=catData.query&&catData.query.pages&&catData.query.pages[id]&&catData.query.pages[id].categories||[];
+    if(ext.length)tags.push('chars: '+ext.length.toLocaleString());
+    if(imgs.length)tags.push(imgs.length+' images');
+    if(cats.length)tags.push(cats.length+' categories');
+    if(p.pageprops&&p.pageprops.wikibase_item)tags.push('WD:'+p.pageprops.wikibase_item);
+    tags.push('<span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'download '+esc(p.title.replace(/'/g,"\\'"))+'\')">Download</span>');
+    tags.push('<span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'save '+esc(p.title.replace(/'/g,"\\'"))+'\')">Save</span>');
+    tags.push('<span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'related\')">Related</span>');
+    tags.push('<span style="cursor:pointer;color:var(--accent)" onclick="window.open(\''+esc(url)+'\',\'_blank\')">Wikipedia</span>');
+    w('<div class="a"><div class="ainfo">'+tags.join(' | ')+'</div></div>');
+    var sections=ext.split('\n').filter(Boolean);
     if(sections.length){
-      let pc=0;
-      for(const sec of sections){
-        const st=sec.trim();
-        if(st.startsWith('== ')&&st.endsWith(' ==')){
-          const stitle=st.replace(/==\s*/g,'').trim();
-          w('<div class="a"><div class="ah2">'+esc(stitle)+'</div></div>');
-        } else if(st.startsWith('=== ')&&st.endsWith(' ===')){
-          const stitle=st.replace(/===\s*/g,'').trim();
-          w('<div class="a"><div class="ah3">'+esc(stitle)+'</div></div>');
+      var pc=0;
+      for(var si=0;si<sections.length;si++){
+        var st=sections[si].trim();
+        if(st.indexOf('== ')===0&&st.lastIndexOf(' ==')===st.length-3){
+          w('<div class="a"><div class="ah2">'+esc(st.replace(/==\s*/g,'').trim())+'</div></div>');
+        } else if(st.indexOf('=== ')===0&&st.lastIndexOf(' ===')===st.length-4){
+          w('<div class="a"><div class="ah3">'+esc(st.replace(/===\s*/g,'').trim())+'</div></div>');
         } else {
-          w('<div class="a"><div class="at">'+linkify(esc(trunc(sec,600)))+'</div></div>');
-          pc++;
+          w('<div class="a"><div class="at">'+linkify(esc(secTrunc(st,800)))+'</div></div>');pc++;
         }
-        if(pc>=6){w('<div class="a"><div class="at" style="color:var(--accent);cursor:pointer" onclick="runCmd(\'read '+esc(p.title.replace(/'/g,"\\'"))+'\')">... read full article &rarr;</div></div>');break}
+        if(pc>=8){w('<div class="a"><div class="at" style="color:var(--accent);cursor:pointer" onclick="runCmd(\'read '+esc(p.title.replace(/'/g,"\\'"))+'\')">... read full article &rarr;</div></div>');break}
       }
     } else {w('No extract available.',{d:true})}
-    // Show some images
     if(imgs.length){
-      w('<div class="a"><div class="asec">&#128247; Images in this article</div></div>');
-      const showImgs=imgs.slice(0,5);
-      for(const img of showImgs){
-        w('<div class="a"><div class="at" style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'images '+esc(p.title.replace(/'/g,"\\'"))+'\')">'+esc(img.title)+'</div></div>');
+      w('<div class="a"><div class="asec">Images</div></div>');
+      var showImgs=imgs.slice(0,5);
+      for(var ii=0;ii<showImgs.length;ii++){
+        w('<div class="a"><div class="at" style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'images '+esc(p.title.replace(/'/g,"\\'"))+'\')">'+esc(showImgs[ii].title)+'</div></div>');
       }
       if(imgs.length>5)w('<div class="a"><div class="at" style="color:var(--dim)">... and '+(imgs.length-5)+' more (type "images '+esc(p.title.replace(/'/g,"\\'"))+'")</div></div>');
     }
-    // Categories as tags
     if(cats.length){
-      w('<div class="a"><div class="asec">&#128193; Categories</div></div>');
-      w('<div class="a"><div class="at">'+cats.map(c=>'<span class="tag" onclick="runCmd(\'search '+esc(c.title.replace('Category:','').replace(/'/g,"\\'"))+'\')">'+esc(c.title.replace('Category:',''))+'</span>').join(' ')+'</div></div>');
+      w('<div class="a"><div class="asec">Categories</div></div>');
+      w('<div class="a"><div class="at">'+cats.map(function(c){return '<span class="tag" onclick="runCmd(\'search '+esc(c.title.replace('Category:','').replace(/'/g,"\\'"))+'\')">'+esc(c.title.replace('Category:',''))+'</span>'}).join(' ')+'</div></div>');
     }
-    // Links in article
-    api('query',{prop:'links',titles:t,pllimit:15}).then(ld=>{
-      const lp=ld.query&&ld.query.pages||{};const li=lp[id]&&lp[id].links||[];
+    api('query',{prop:'links',titles:t,pllimit:15}).then(function(ld){
+      var lp=ld.query&&ld.query.pages||{},li=lp[id]&&lp[id].links||[];
       if(li.length){
-        w('<div class="a"><div class="asec">&#128279; Links in this article</div></div>');
-        w('<div class="a"><div class="at">'+li.slice(0,12).map(l=>'<span class="al" onclick="runCmd(\'open '+esc(l.title.replace(/'/g,"\\'"))+'\')">'+esc(l.title)+'</span>').join(' &middot; ')+'</div></div>');
+        w('<div class="a"><div class="asec">Links</div></div>');
+        w('<div class="a"><div class="at">'+li.slice(0,12).map(function(l){return '<span class="al" onclick="runCmd(\'open '+esc(l.title.replace(/'/g,"\\'"))+'\')">'+esc(l.title)+'</span>'}).join(' | ')+'</div></div>');
         if(li.length>12)w('<div class="a"><div class="at" style="color:var(--dim)">... and '+(li.length-12)+' more (type "links '+esc(p.title.replace(/'/g,"\\'"))+'")</div></div>');
       }
-    }).catch(()=>{});
-    // Related
+    }).catch(function(){});
     fetchRelated(p.title);
-    w('<div class="a"><div class="at" style="margin-top:8px;color:var(--dim)">Type "related" for more | "read" for full text | click any link to open inline</div></div>');
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+    w('<div class="a"><div class="at" style="margin-top:8px;color:var(--dim)">Type "related" for more | "read" for full text | "download" to save | "stats" for analysis</div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
 
-function linkify(text){
-  // Convert potential Wikipedia links to clickable
-  return text.replace(/\[\[([^\]]+)\]\]/g,(m,t)=>{
-    const parts=t.split('|');const title=parts[0];const label=parts[1]||title;
-    return '<span class="al" onclick="runCmd(\'open '+esc(title.replace(/'/g,"\\'"))+'\')">'+esc(label)+'</span>';
-  });
-}
-
-function trunc(t,m){return t.length<=m?t:t.slice(0,m)+'...'}
+function secTrunc(t,m){return t.length<=m?t:t.slice(0,m)+'...'}
 
 // ---- Read Full ----
 function cmdRead(t){
   if(!t){w('Usage: read <title>',{d:true});return}
   t=resolveTitle(t);
   w('Loading full article "'+esc(t)+'"...',{d:true});
-  api('query',{prop:'extracts',explaintext:1,exlimit:1,titles:t}).then(d=>{
-    const pages=d.query&&d.query.pages||{};const id=Object.keys(pages)[0];
+  api('query',{prop:'extracts',explaintext:1,exlimit:1,titles:t}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
     if(!id||id==='-1'){w('Not found.',{e:true});return}
-    const ext=pages[id].extract||'No content.';const sections=ext.split('\n').filter(Boolean);
+    var ext=pages[id].extract||'No content.';
+    currentArticleFull=ext;
+    var sections=ext.split('\n').filter(Boolean);
     line();
     w('<div class="a"><div class="ah1">'+esc(pages[id].title)+' (full text)</div></div>');
-    for(const sec of sections){
-      const st=sec.trim();
-      if(st.startsWith('=== '))w('<div class="a"><div class="ah3">'+esc(st.replace(/===\s*/g,''))+'</div></div>');
-      else if(st.startsWith('== '))w('<div class="a"><div class="ah2">'+esc(st.replace(/==\s*/g,''))+'</div></div>');
-      else w('<div class="a"><div class="at">'+linkify(esc(sec))+'</div></div>');
+    var words=ext.split(/\s+/).filter(Boolean).length,rt=Math.ceil(words/200);
+    w('<div class="a"><div class="at" style="color:var(--dim)">'+words.toLocaleString()+' words | ~'+rt+' min reading | <span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'download '+esc(t.replace(/'/g,"\\'"))+'\')">Download TXT</span> | <span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'dlmd '+esc(t.replace(/'/g,"\\'"))+'\')">Download MD</span></div></div>');
+    line();
+    for(var si=0;si<sections.length;si++){
+      var st=sections[si].trim();
+      if(st.indexOf('=== ')===0)w('<div class="a"><div class="ah3">'+esc(st.replace(/===\s*/g,''))+'</div></div>');
+      else if(st.indexOf('== ')===0)w('<div class="a"><div class="ah2">'+esc(st.replace(/==\s*/g,''))+'</div></div>');
+      else w('<div class="a"><div class="at">'+linkify(esc(sections[si]))+'</div></div>');
     }
-    w('<div class="a"><div class="at" style="color:var(--dim);margin-top:12px">— End of article —</div></div>');
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+    w('<div class="a"><div class="at" style="color:var(--dim);margin-top:12px">-- End of article --</div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
 
 // ---- Random ----
 function cmdRandom(){
   w('Rolling the dice...',{d:true});
-  api('query',{list:'random',rnnamespace:0,rnlimit:1}).then(d=>{
-    const items=d.query&&d.query.random||[];if(items.length)cmdOpen(items[0].title)
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+  api('query',{list:'random',rnnamespace:0,rnlimit:1}).then(function(d){
+    var items=d.query&&d.query.random||[];if(items.length)cmdOpen(items[0].title)
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+function fetchRandom(){
+  api('query',{list:'random',rnnamespace:0,rnlimit:1}).then(function(d){
+    var items=d.query&&d.query.random||[];
+    if(items.length)w('<div class="a"><div class="at"><span style="color:var(--dim)">Random suggestion:</span> <span class="al" onclick="runCmd(\'open '+esc(items[0].title.replace(/'/g,"\\'"))+'\')">'+esc(items[0].title)+'</span></div></div>');
+  }).catch(function(){});
 }
 
-// ---- More ----
+// ---- More / Back / Related ----
 function cmdMore(){
   if(!searchQuery){w('No active search.',{d:true});return}
   if(searchOffset>=searchTotal){w('No more results.',{d:true});return}
   doSearch(searchQuery,searchOffset,true);
 }
-
-// ---- Back ----
 function cmdBack(){
   if(!searchQuery){w('No saved search.',{d:true});return}
   cmdSearch(searchQuery);
 }
-
-// ---- Related ----
 function cmdRelated(){
   if(!currentArticle){w('No article loaded. Use "open <title>".',{d:true});return}
   fetchRelated(currentArticle.title);
 }
 function fetchRelated(title){
-  const terms=title.split(/\s+/).filter(w=>w.length>3).slice(0,3).join(' ');
-  const doRender=(d)=>{
-    const items=d.query&&d.query.search||d.query&&d.query.categorymembers||[];
-    const rel=items.filter(x=>x.title).filter(x=>x.title!==title).slice(0,8);
+  var terms=title.split(/\s+/).filter(function(w){return w.length>3}).slice(0,3).join(' ');
+  var doRender=function(d){
+    var items=d.query&&d.query.search||d.query&&d.query.categorymembers||[];
+    var rel=items.filter(function(x){return x.title}).filter(function(x){return x.title!==title}).slice(0,8);
     if(rel.length){
       line();w('Related to "'+esc(title)+'":',{d:true});
-      for(const r of rel)w('<div class="a"><div class="at"><span class="al" onclick="runCmd(\'open '+esc(r.title.replace(/'/g,"\\'"))+'\')">'+esc(r.title)+'</span></div></div>');
+      for(var ri=0;ri<rel.length;ri++)w('<div class="a"><div class="at"><span class="al" onclick="runCmd(\'open '+esc(rel[ri].title.replace(/'/g,"\\'"))+'\')">'+esc(rel[ri].title)+'</span></div></div>');
     } else {w('No related found.',{d:true})}
   };
-  if(terms){api('query',{list:'search',srsearch:terms,srlimit:8,srwhat:'title'}).then(doRender).catch(()=>{})}
+  if(terms){api('query',{list:'search',srsearch:terms,srlimit:8,srwhat:'title'}).then(doRender).catch(function(){})}
   else {
-    api('query',{prop:'categories',titles:title,cllimit:5}).then(cd=>{
-      const cp=cd.query&&cd.query.pages||{};const id=Object.keys(cp)[0];
+    api('query',{prop:'categories',titles:title,cllimit:5}).then(function(cd){
+      var cp=cd.query&&cd.query.pages||{},id=Object.keys(cp)[0];
       if(id&&cp[id]&&cp[id].categories&&cp[id].categories[0])
-        api('query',{list:'categorymembers',cmtitle:cp[id].categories[0].title,cmlimit:8}).then(doRender).catch(()=>{});
-    }).catch(()=>{});
+        api('query',{list:'categorymembers',cmtitle:cp[id].categories[0].title,cmlimit:8}).then(doRender).catch(function(){});
+    }).catch(function(){});
   }
 }
 
-// ---- Top ----
+// ---- Top / Featured / Feed ----
 function cmdTop(){
   w('Fetching most-read articles...',{d:true});
-  const today=new Date().toISOString().slice(0,10);
+  var today=new Date().toISOString().slice(0,10);
   fetch('https://wikimedia.org/api/rest_v1/metrics/pageviews/top/'+lang+'.wikipedia.org/all-access/'+today)
-    .then(r=>r.json()).then(d=>{
-    const items=d.items&&d.items[0]&&d.items[0].articles||[];
+    .then(function(r){return r.json()}).then(function(d){
+    var items=d.items&&d.items[0]&&d.items[0].articles||[];
     if(!items.length)throw new Error('No data');
     line();w('Top 30 most-read today on '+lang.toUpperCase()+'.wikipedia.org',{d:true});line();
-    items.filter(a=>a.article!='-').slice(0,30).forEach((a,i)=>{
-      const t=a.article.replace(/_/g,' ');
+    items.filter(function(a){return a.article!='-'}).slice(0,30).forEach(function(a,i){
+      var t=a.article.replace(/_/g,' ');
       w('<div class="a"><div class="at"><span style="color:var(--dim)">'+(i+1)+'.</span> <span class="al" onclick="runCmd(\'open '+esc(t.replace(/'/g,"\\'"))+'\')">'+esc(t)+'</span> <span style="color:var(--dim)">('+a.views.toLocaleString()+' views)</span></div></div>');
     });
-  }).catch(()=>{
+  }).catch(function(){
     w('Could not fetch top articles. Showing random instead.',{d:true});
-    api('query',{list:'random',rnnamespace:0,rnlimit:10}).then(d=>{
-      const rs=d.query&&d.query.random||[];line();
-      rs.forEach(r=>w('<div class="a"><div class="at"><span style="color:var(--dim)">&middot;</span> <span class="al" onclick="runCmd(\'open '+esc(r.title.replace(/'/g,"\\'"))+'\')">'+esc(r.title)+'</span></div></div>'));
+    api('query',{list:'random',rnnamespace:0,rnlimit:10}).then(function(d){
+      var rs=d.query&&d.query.random||[];line();
+      rs.forEach(function(r){w('<div class="a"><div class="at"><span style="color:var(--dim)">*</span> <span class="al" onclick="runCmd(\'open '+esc(r.title.replace(/'/g,"\\'"))+'\')">'+esc(r.title)+'</span></div></div>')});
     });
   });
 }
-
-// ---- Featured ----
 function cmdFeatured(){
   w('Fetching featured article...',{d:true});
-  const today=new Date().toISOString().slice(0,10).replace(/-/g,'/');
+  var today=new Date().toISOString().slice(0,10).replace(/-/g,'/');
   fetch('https://'+lang+'.wikipedia.org/api/rest_v1/feed/featured/'+today)
-    .then(r=>r.json()).then(d=>{
+    .then(function(r){return r.json()}).then(function(d){
     if(d.tfa){cmdOpen(d.tfa.title)}else{w('No featured article today.',{d:true})}
-  }).catch(()=>{
-    w('Using random article instead.',{d:true});cmdRandom();
-  });
+  }).catch(function(){w('Using random article instead.',{d:true});cmdRandom()});
 }
-
-// ---- Feed ----
 function cmdFeed(){
   w('Fetching random collection...',{d:true});
-  api('query',{list:'random',rnnamespace:0,rnlimit:8}).then(d=>{
-    const rs=d.query&&d.query.random||[];line();
+  api('query',{list:'random',rnnamespace:0,rnlimit:8}).then(function(d){
+    var rs=d.query&&d.query.random||[];line();
     w('Random articles:',{d:true});line();
-    rs.forEach(r=>w('<div class="a"><div class="at"><span class="al" onclick="runCmd(\'open '+esc(r.title.replace(/'/g,"\\'"))+'\')">'+esc(r.title)+'</span></div></div>'));
-  }).catch(()=>{});
+    rs.forEach(function(r){w('<div class="a"><div class="at"><span class="al" onclick="runCmd(\'open '+esc(r.title.replace(/'/g,"\\'"))+'\')">'+esc(r.title)+'</span></div></div>')});
+  }).catch(function(){});
 }
 
-// ---- Images ----
+// ---- Images / Links / Categories ----
 function cmdImages(t){
   if(!t){w('Usage: images <title>',{d:true});return}
   t=resolveTitle(t);
   w('Loading images from "'+esc(t)+'"...',{d:true});
-  api('query',{prop:'images',titles:t,imlimit:50}).then(d=>{
-    const pages=d.query&&d.query.pages||{};const id=Object.keys(pages)[0];
+  api('query',{prop:'images',titles:t,imlimit:50}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
     if(!id||id==='-1'){w('Not found.',{e:true});return}
-    const imgs=pages[id].images||[];
+    var imgs=pages[id].images||[];
     if(!imgs.length){w('No images.',{d:true});return}
     line();w(imgs.length+' images in "'+esc(t)+'":',{d:true});
-    for(const img of imgs)w('  <span style="color:var(--dim)">&middot;</span> '+esc(img.title));
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+    for(var ii=0;ii<imgs.length;ii++)w('  <span style="color:var(--dim)">*</span> '+esc(imgs[ii].title));
+    w('<div class="a"><div class="at" style="margin-top:6px"><span class="dl-btn" onclick="runCmd(\'dlimg '+esc(t.replace(/'/g,"\\'"))+'\')">Download all images</span></div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
-
-// ---- Links ----
 function cmdLinks(t){
   if(!t){w('Usage: links <title>',{d:true});return}
   t=resolveTitle(t);
   w('Loading links from "'+esc(t)+'"...',{d:true});
-  api('query',{prop:'links',titles:t,pllimit:50}).then(d=>{
-    const pages=d.query&&d.query.pages||{};const id=Object.keys(pages)[0];
+  api('query',{prop:'links',titles:t,pllimit:50}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
     if(!id||id==='-1'){w('Not found.',{e:true});return}
-    const links=pages[id].links||[];
+    var links=pages[id].links||[];
     if(!links.length){w('No links.',{d:true});return}
     line();w(links.length+' links from "'+esc(t)+'" (showing 50):',{d:true});
-    for(const l of links)w('<div class="a"><div class="at"><span style="color:var(--dim)">&middot;</span> <span class="al" onclick="runCmd(\'open '+esc(l.title.replace(/'/g,"\\'"))+'\')">'+esc(l.title)+'</span></div></div>');
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+    for(var li=0;li<links.length;li++)w('<div class="a"><div class="at"><span style="color:var(--dim)">*</span> <span class="al" onclick="runCmd(\'open '+esc(links[li].title.replace(/'/g,"\\'"))+'\')">'+esc(links[li].title)+'</span></div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
-
-// ---- Categories ----
 function cmdCats(t){
   if(!t){w('Usage: categories <title>',{d:true});return}
   t=resolveTitle(t);
-  api('query',{prop:'categories',titles:t,cllimit:50}).then(d=>{
-    const pages=d.query&&d.query.pages||{};const id=Object.keys(pages)[0];
+  api('query',{prop:'categories',titles:t,cllimit:50}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
     if(!id||id==='-1'){w('Not found.',{e:true});return}
-    const cats=pages[id].categories||[];
+    var cats=pages[id].categories||[];
     if(!cats.length){w('No categories.',{d:true});return}
     line();w('Categories:',{d:true});
-    w('<div class="a"><div class="at">'+cats.map(c=>'<span class="tag" onclick="runCmd(\'search '+esc(c.title.replace('Category:','').replace(/'/g,"\\'"))+'\')">'+esc(c.title.replace('Category:',''))+'</span>').join(' ')+'</div></div>');
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+    w('<div class="a"><div class="at">'+cats.map(function(c){return '<span class="tag" onclick="runCmd(\'search '+esc(c.title.replace('Category:','').replace(/'/g,"\\'"))+'\')">'+esc(c.title.replace('Category:',''))+'</span>'}).join(' ')+'</div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
 
-// ---- Suggestions ----
+// ---- Suggestions / Geo ----
 function cmdSuggestions(q){
   if(!q){w('Usage: suggestions <query>',{d:true});return}
-  api('opensearch',{search:q,limit:10,namespace:0}).then(d=>{
-    const titles=d[1]||[],descs=d[2]||[];
+  api('opensearch',{search:q,limit:10,namespace:0}).then(function(d){
+    var titles=d[1]||[];
     if(!titles.length){w('No suggestions.',{d:true});return}
     line();w('Suggestions for "'+esc(q)+'":',{d:true});line();
-    for(let i=0;i<titles.length;i++){
-      w('<div class="a"><div class="at"><span class="al" onclick="runCmd(\'open '+esc(titles[i].replace(/'/g,"\\'"))+'\')">'+esc(titles[i])+'</span></div></div>');
-    }
-  }).catch(()=>{});
+    for(var ti=0;ti<titles.length;ti++)w('<div class="a"><div class="at"><span class="al" onclick="runCmd(\'open '+esc(titles[ti].replace(/'/g,"\\'"))+'\')">'+esc(titles[ti])+'</span></div></div>');
+  }).catch(function(){});
 }
-
-// ---- Geo Search ----
 function cmdGeo(a){
-  const parts=a.split(/\s+/);
+  var parts=a.split(/\s+/);
   if(parts.length<2){w('Usage: geosearch <lat> <lon> [radius_km]',{d:true});return}
-  const lat=parseFloat(parts[0]),lon=parseFloat(parts[1]),radius=parseInt(parts[2])||10;
+  var lat=parseFloat(parts[0]),lon=parseFloat(parts[1]),radius=parseInt(parts[2])||10;
   if(isNaN(lat)||isNaN(lon)){w('Invalid coordinates.',{d:true});return}
   w('Searching articles near '+lat+', '+lon+' ('+radius+'km)...',{d:true});
-  api('query',{list:'geosearch',gscoord:lat+'|'+lon,gsradius:radius*1000,gslimit:20,gsprop:'type|name'}).then(d=>{
-    const items=d.query&&d.query.geosearch||[];
-    if(!items.length){w('No articles found near these coordinates.',{d:true});return}
+  api('query',{list:'geosearch',gscoord:lat+'|'+lon,gsradius:radius*1000,gslimit:20}).then(function(d){
+    var items=d.query&&d.query.geosearch||[];
+    if(!items.length){w('No articles found.',{d:true});return}
     line();w(items.length+' articles near '+lat+', '+lon+':',{d:true});line();
-    for(const r of items){
-      w('<div class="a"><div class="at"><span style="color:var(--dim)">&middot;</span> <span class="al" onclick="runCmd(\'open '+esc(r.title.replace(/'/g,"\\'"))+'\')">'+esc(r.title)+'</span> <span style="color:var(--dim)">('+r.dist.toFixed(0)+'m)</span></div></div>');
-    }
-  }).catch(e=>w('Error: '+esc(e.message),{e:true}));
+    for(var gi=0;gi<items.length;gi++)w('<div class="a"><div class="at"><span style="color:var(--dim)">*</span> <span class="al" onclick="runCmd(\'open '+esc(items[gi].title.replace(/'/g,"\\'"))+'\')">'+esc(items[gi].title)+'</span> <span style="color:var(--dim)">('+items[gi].dist.toFixed(0)+'m)</span></div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
 }
 
-// ---- Language ----
+// ---- Language / History / Clear ----
 function cmdLang(c){
   if(!c){w('Current: '+lang,{d:true});return}
-  const langs=['en','zh','ja','de','fr','es','ru','ar','pt','it','ko','nl','pl','sv','tr','vi','th','hi','bn','ms','tl','el','he','cs','ro','da','fi','hu','no','uk','id'];
+  var langs=['en','zh','ja','de','fr','es','ru','ar','pt','it','ko','nl','pl','sv','tr','vi','th','hi','bn','ms','tl','el','he','cs','ro','da','fi','hu','no','uk','id'];
   if(!langs.includes(c)){w('Unsupported. Try: en, zh, ja, de, fr, es, ru...',{d:true});return}
-  lang=c;searchResults=[];searchQuery='';currentArticle=null;
+  lang=c;searchResults=[];searchQuery='';currentArticle=null;currentArticleFull=null;
   w('Language changed to: '+c,{d:true});
 }
-
-// ---- History ----
 function addHist(s){cmdHistory.push(s);if(cmdHistory.length>MAX_HIST)cmdHistory.shift();histIdx=cmdHistory.length}
 function cmdHist(){
   if(!cmdHistory.length){w('No history.',{d:true});return}
   line();w('History ('+cmdHistory.length+'):',{d:true});line();
-  cmdHistory.forEach((h,i)=>w('<div class="a"><div class="at"><span style="color:var(--dim)">'+(i+1)+'.</span> '+esc(h)+'</div></div>'));
+  cmdHistory.forEach(function(h,i){w('<div class="a"><div class="at"><span style="color:var(--dim)">'+(i+1)+'.</span> '+esc(h)+'</div></div>')});
 }
-
-// ---- Clear ----
 function cmdClear(){clearScr()}
 
-// ---- Resolve ----
-function resolveTitle(i){
-  const m=i.match(/^#?(\d+)$/);
-  if(m&&searchResults.length){const idx=parseInt(m[1])-1;if(idx>=0&&idx<searchResults.length)return searchResults[idx].title}
-  return i;
+// ============================================================
+// NEW FEATURES: Download, Bookmarks, Stats, TOC, Find
+// ============================================================
+
+// ---- Download TXT ----
+function cmdDownload(t){
+  if(!t){w('Usage: download <title>',{d:true});return}
+  t=resolveTitle(t);
+  w('Preparing "'+esc(t)+'" for download as .txt...',{d:true});
+  api('query',{prop:'extracts|info',explaintext:1,exlimit:1,titles:t,inprop:'url'}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var p=pages[id],ext=p.extract||'No content.',url=p.canonicalurl||'https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(t.replace(/ /g,'_'));
+    var txt='Title: '+p.title+'\nURL: '+url+'\nLanguage: '+lang+'\nDownloaded: '+new Date().toISOString().slice(0,10)+'\n\n'+ext;
+    downloadBlob(txt,sanitize(p.title)+'.txt','text/plain');
+    w('Downloaded "'+esc(p.title)+'" as .txt ('+(txt.length/1024).toFixed(1)+'KB)',{ok:true});
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+// ---- Download HTML ----
+function cmdDownloadHtml(t){
+  if(!t){w('Usage: dlhtml <title>',{d:true});return}
+  t=resolveTitle(t);
+  w('Preparing "'+esc(t)+'" for download as .html...',{d:true});
+  api('query',{prop:'extracts|info|pageimages',explaintext:0,exlimit:1,titles:t,inprop:'url',pithumbsize:800}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var p=pages[id],ext=p.extract||'No content.',img=p.thumbnail&&p.thumbnail.source||'';
+    var url=p.canonicalurl||'https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(t.replace(/ /g,'_'));
+    var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(p.title)+'</title><style>body{max-width:800px;margin:0 auto;padding:20px;font-family:Georgia,serif;line-height:1.7}h1{border-bottom:2px solid #000;padding-bottom:8px}img{max-width:100%}a{color:#05b}</style></head><body>';
+    html+='<h1>'+esc(p.title)+'</h1>';
+    html+='<p style="color:#888">Source: <a href="'+esc(url)+'">'+esc(url)+'</a> | Language: '+lang+' | Downloaded: '+new Date().toISOString().slice(0,10)+'</p>';
+    if(img)html+='<p><img src="'+esc(img)+'" alt="'+esc(p.title)+'"></p>';
+    html+=ext+'\n</body></html>';
+    downloadBlob(html,sanitize(p.title)+'.html','text/html');
+    w('Downloaded "'+esc(p.title)+'" as .html ('+(html.length/1024).toFixed(1)+'KB)',{ok:true});
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+// ---- Download Markdown ----
+function cmdDownloadMarkdown(t){
+  if(!t){w('Usage: dlmd <title>',{d:true});return}
+  t=resolveTitle(t);
+  w('Preparing "'+esc(t)+'" as Markdown...',{d:true});
+  api('query',{prop:'extracts|info',explaintext:1,exlimit:1,titles:t,inprop:'url'}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var p=pages[id],ext=p.extract||'No content.',url=p.canonicalurl||'https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(t.replace(/ /g,'_'));
+    var md='# '+p.title+'\n\n';
+    md+='> Source: ['+url+']('+url+')  \n';
+    md+='> Language: '+lang+' | Downloaded: '+new Date().toISOString().slice(0,10)+'\n\n';
+    md+='---\n\n';
+    var sections=ext.split('\n');
+    for(var si=0;si<sections.length;si++){
+      var line=sections[si].trim();
+      if(line.indexOf('== ')===0&&line.lastIndexOf(' ==')===line.length-3){
+        md+='\n## '+line.replace(/==\s*/g,'').trim()+'\n\n';
+      } else if(line.indexOf('=== ')===0&&line.lastIndexOf(' ===')===line.length-4){
+        md+='\n### '+line.replace(/===\s*/g,'').trim()+'\n\n';
+      } else {
+        var wikilinked=line.replace(/\[\[([^\]]+)\]\]/g,function(m,wt){var p2=wt.split('|');return '['+(p2[1]||p2[0])+'](https://'+lang+'.wikipedia.org/wiki/'+encodeURIComponent(p2[0].replace(/ /g,'_'))+')'});
+        if(wikilinked.trim())md+=wikilinked+'\n\n';
+      }
+    }
+    downloadBlob(md,sanitize(p.title)+'.md','text/markdown');
+    w('Downloaded "'+esc(p.title)+'" as .md ('+(md.length/1024).toFixed(1)+'KB)',{ok:true});
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+// ---- Download Images ----
+function cmdDownloadImages(t){
+  if(!t){w('Usage: dlimg <title>',{d:true});return}
+  t=resolveTitle(t);
+  w('Fetching image URLs from "'+esc(t)+'"...',{d:true});
+  api('query',{prop:'images',titles:t,imlimit:50}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var imgs=pages[id].images||[];
+    if(!imgs.length){w('No images.',{d:true});return}
+    var imgTitles=imgs.map(function(i){return i.title}).join('|');
+    api('query',{prop:'imageinfo',titles:imgTitles,iiprop:'url|mime',iilimit:50}).then(function(id2){
+      var ipages=id2.query&&id2.query.pages||{};
+      var urls=[];
+      for(var k in ipages){
+        if(ipages[k].imageinfo&&ipages[k].imageinfo[0]){
+          var info=ipages[k].imageinfo[0];
+          if(info.mime&&info.mime.indexOf('image/')===0)urls.push({url:info.url,title:ipages[k].title});
+        }
+      }
+      if(!urls.length){w('No downloadable images found.',{d:true});return}
+      w('Found '+urls.length+' downloadable images:',{ok:true});
+      line();
+      for(var ui=0;ui<urls.length;ui++){
+        var fname=urls[ui].url.split('/').pop().split('?')[0]||('image_'+(ui+1)+'.jpg');
+        w('<div class="a"><div class="at"><span style="color:var(--dim)">'+(ui+1)+'.</span> <span class="dl-btn" onclick="downloadUrl(\''+esc(urls[ui].url)+'\',\''+esc(fname)+'\')">Download</span> '+esc(urls[ui].title)+'</div></div>');
+      }
+      line();
+      w('Click each download button to save images.',{d:true});
+    }).catch(function(e){w('Error getting image URLs: '+esc(e.message),{e:true})});
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+// ---- Save / Bookmark ----
+function cmdSave(t){
+  if(!t){w('Usage: save <title>',{d:true});return}
+  t=resolveTitle(t);
+  api('query',{prop:'info|extracts',exintro:1,explaintext:1,titles:t,inprop:'url'}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var p=pages[id],bm=getBookmarks();
+    if(bm.some(function(b){return b.title===p.title})){w('Already bookmarked!',{d:true});return}
+    var snap=(p.extract||'').split('\n').filter(Boolean).slice(0,3).join(' ').substring(0,200);
+    bm.push({title:p.title,url:p.canonicalurl||'',lang:lang,saved:new Date().toISOString(),snip:snap});
+    saveBookmarks(bm);
+    w('Bookmarked "'+esc(p.title)+'"',{ok:true});
+    toastMsg('Bookmarked: '+p.title);
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+function cmdBookmarks(){
+  var bm=getBookmarks();
+  if(!bm.length){w('No bookmarks. Use "save <title>" to add one.',{d:true});return}
+  line();w('Bookmarks ('+bm.length+'):',{d:true});line();
+  for(var bi=0;bi<bm.length;bi++){
+    var b=bm[bi];
+    w('<div class="a"><div class="at"><span style="color:var(--dim)">'+(bi+1)+'.</span> <span class="al" onclick="runCmd(\'open '+esc(b.title.replace(/'/g,"\\'"))+'\')">'+esc(b.title)+'</span> <span style="color:var(--dim)">('+b.lang+')</span>'+
+      (b.snip?'<br><span style="color:var(--dim);font-size:calc(var(--fs)-2px)">'+esc(b.snip)+'...</span>':'')+
+      '<br><span style="color:var(--dim);font-size:calc(var(--fs)-3px)">'+b.saved.slice(0,10)+' | <span style="cursor:pointer;color:var(--accent)" onclick="runCmd(\'remove '+(bi+1)+'\')">remove</span></span></div></div>');
+  }
+  line();
+  w('<div class="a"><div class="at">Total: '+bm.length+' bookmarks | <span class="dl-btn" onclick="runCmd(\'export\')">Export as JSON</span></div></div>');
+}
+
+function cmdRemoveBm(n){
+  var bm=getBookmarks();
+  if(!n){w('Usage: remove <number>',{d:true});return}
+  var idx=parseInt(n)-1;
+  if(isNaN(idx)||idx<0||idx>=bm.length){w('Invalid bookmark number.',{d:true});return}
+  var title=bm[idx].title;
+  bm.splice(idx,1);saveBookmarks(bm);
+  w('Removed bookmark "'+esc(title)+'"',{d:true});
+}
+
+function cmdExport(){
+  var bm=getBookmarks();
+  if(!bm.length){w('No bookmarks to export.',{d:true});return}
+  var json=JSON.stringify(bm,null,2);
+  downloadBlob(json,'wikish_bookmarks_'+new Date().toISOString().slice(0,10)+'.json','application/json');
+  w('Exported '+bm.length+' bookmarks as JSON ('+(json.length/1024).toFixed(1)+'KB)',{ok:true});
+  toastMsg('Bookmarks exported');
+}
+
+// ---- Stats ----
+function cmdStats(t){
+  if(!t){w('Usage: stats <title>',{d:true});return}
+  t=resolveTitle(t);
+  w('Analyzing "'+esc(t)+'"...',{d:true});
+  api('query',{prop:'extracts|info|pageprops',explaintext:1,exlimit:1,titles:t,inprop:'url|protection',ppprop:'wikibase_item|page_image_free|displaytitle'}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var p=pages[id],ext=p.extract||'';
+    line();
+    w('<div class="ah1">Statistics: '+esc(p.title)+'</div>');
+    line();
+    var stats=[];
+    var chars=ext.length;
+    var words=ext.split(/\s+/).filter(Boolean).length;
+    var sentences=ext.split(/[.!?]+/).filter(Boolean).length;
+    var paras=ext.split('\n').filter(function(l){return l.trim().length>0}).length;
+    var sections=ext.split('\n').filter(function(l){return l.trim().indexOf('== ')===0}).length;
+    stats.push(['Title',p.title]);
+    stats.push(['Page ID',id]);
+    stats.push(['Language',lang.toUpperCase()]);
+    stats.push(['Characters',chars.toLocaleString()]);
+    stats.push(['Words',words.toLocaleString()]);
+    stats.push(['Sentences',sentences.toLocaleString()]);
+    stats.push(['Paragraphs',paras.toLocaleString()]);
+    stats.push(['Sections',sections]);
+    stats.push(['Reading time (200 wpm)',Math.ceil(words/200)+' min']);
+    stats.push(['Reading time (300 wpm)',Math.ceil(words/300)+' min']);
+    var sizeKB=(ext.length/1024).toFixed(1);
+    stats.push(['Text size',sizeKB+' KB']);
+    if(p.pageprops&&p.pageprops.wikibase_item)stats.push(['Wikidata ID',p.pageprops.wikibase_item]);
+    if(p.touched)stats.push(['Last touched',p.touched.slice(0,10)]);
+    stats.push(['View URL',p.canonicalurl||'']);
+    for(var si=0;si<stats.length;si++){
+      w('<div class="a"><div class="at"><span style="color:var(--dim);display:inline-block;width:160px">'+esc(stats[si][0])+':</span>'+esc(stats[si][1])+'</div></div>');
+    }
+    w('<div class="a"><div class="at" style="margin-top:8px"><span class="dl-btn" onclick="runCmd(\'download '+esc(t.replace(/'/g,"\\'"))+'\')">Download TXT</span></div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+// ---- Table of Contents ----
+function cmdToc(t){
+  if(!t){w('Usage: toc <title>',{d:true});return}
+  t=resolveTitle(t);
+  w('Generating table of contents for "'+esc(t)+'"...',{d:true});
+  api('query',{prop:'extracts',explaintext:1,exlimit:1,titles:t}).then(function(d){
+    var pages=d.query&&d.query.pages||{},id=Object.keys(pages)[0];
+    if(!id||id==='-1'){w('Not found.',{e:true});return}
+    var ext=pages[id].extract||'';
+    var lines=ext.split('\n');
+    var toc=[];
+    for(var li=0;li<lines.length;li++){
+      var l=lines[li].trim();
+      if(l.indexOf('== ')===0&&l.lastIndexOf(' ==')===l.length-3){
+        toc.push({level:2,title:l.replace(/==\s*/g,'').trim()});
+      } else if(l.indexOf('=== ')===0&&l.lastIndexOf(' ===')===l.length-4){
+        toc.push({level:3,title:l.replace(/===\s*/g,'').trim()});
+      }
+    }
+    if(!toc.length){w('No sections found in this article.',{d:true});return}
+    line();
+    w('<div class="ah1">Table of Contents: '+esc(pages[id].title)+'</div>');
+    w('<div class="at" style="color:var(--dim);margin-bottom:8px">'+toc.length+' sections</div>');
+    line();
+    for(var ti=0;ti<toc.length;ti++){
+      var indent=toc[ti].level===3?'&nbsp;&nbsp;&nbsp;&nbsp;':'';
+      w('<div class="a"><div class="at">'+indent+'<span style="color:var(--dim)">'+(ti+1)+'.</span> <span class="al" onclick="runCmd(\'open '+esc(t.replace(/'/g,"\\'"))+'\')">'+esc(toc[ti].title)+'</span></div></div>');
+    }
+    line();
+    w('<div class="a"><div class="at"><span class="dl-btn" onclick="runCmd(\'read '+esc(t.replace(/'/g,"\\'"))+'\')">Read full article</span></div></div>');
+  }).catch(function(e){w('Error: '+esc(e.message),{e:true})});
+}
+
+// ---- Find within article ----
+function cmdFind(q){
+  if(!q){w('Usage: find <text>',{d:true});return}
+  if(!currentArticle&&!currentArticleFull){w('No article loaded. Use "open" or "read" first.',{d:true});return}
+  var text=currentArticleFull||(currentArticle?currentArticle.extract:'');
+  if(!text){w('No article content available.',{d:true});return}
+  var lower=q.toLowerCase();
+  var lines=text.split('\n');
+  var results=[];
+  for(var li=0;li<lines.length;li++){
+    if(lines[li].toLowerCase().indexOf(lower)!==-1){
+      var context=lines[li].trim().substring(0,200);
+      results.push({line:li+1,text:context});
+    }
+  }
+  currentFindResults=results;
+  if(!results.length){w('No matches for "'+esc(q)+'".',{d:true});return}
+  line();
+  w('Found '+results.length+' matches for "'+esc(q)+'":',{ok:true});
+  line();
+  var maxShow=Math.min(results.length,30);
+  for(var ri=0;ri<maxShow;ri++){
+    var r=results[ri];
+    var highlighted=r.text.replace(new RegExp(esc(q),'gi'),function(m){return '<span style="background:#ff0;color:#000">'+m+'</span>'});
+    w('<div class="a"><div class="at"><span style="color:var(--dim)">L'+r.line+':</span> '+highlighted+'</div></div>');
+  }
+  if(results.length>30)w('<div class="a"><div class="at" style="color:var(--dim)">... and '+(results.length-30)+' more matches</div></div>');
 }
 
 // ---- Settings ----
 function cmdSettings(){
-  const s=loadSettings();const sb=document.getElementById('settingsBody');
-  const colorRow=(label,key)=>'<div class="sf"><label>'+label+'</label><input type="color" value="'+s[key]+'" onchange="updateSetting(\''+key+'\',this.value)"></div>';
-  const rangeRow=(label,key,min,max,step,unit)=>'<div class="sf"><label>'+label+' <span class="val" id="v_'+key+'">'+s[key]+(unit||'')+'</span></label><input type="range" min="'+min+'" max="'+max+'" step="'+(step||1)+'" value="'+s[key]+'" oninput="updateSetting(\''+key+'\',this.value);document.getElementById(\'v_'+key+'\').textContent=this.value'+(unit?"+'"+unit+"'":"")+'"></div>';
-  const selectRow=(label,key,opts)=>'<div class="sf"><label>'+label+'</label><select onchange="updateSetting(\''+key+'\',this.value)">'+opts.map(o=>'<option value="'+o.val+'"'+(s[key]===o.val?' selected':'')+'>'+o.label+'</option>').join('')+'</select></div>';
+  var s=loadSettings(),sb=document.getElementById('settingsBody');
+  var colorRow=function(label,key){return '<div class="sf"><label>'+label+'</label><input type="color" value="'+s[key]+'" onchange="updateSetting(\''+key+'\',this.value)"></div>'};
+  var rangeRow=function(label,key,min,max,step,unit){return '<div class="sf"><label>'+label+' <span class="val" id="v_'+key+'">'+s[key]+(unit||'')+'</span></label><input type="range" min="'+min+'" max="'+max+'" step="'+(step||1)+'" value="'+s[key]+'" oninput="updateSetting(\''+key+'\',this.value);document.getElementById(\'v_'+key+'\').textContent=this.value'+(unit?"+'"+unit+"'":"")+'"></div>'};
+  var selectRow=function(label,key,opts){return '<div class="sf"><label>'+label+'</label><select onchange="updateSetting(\''+key+'\',this.value)">'+opts.map(function(o){return '<option value="'+o.val+'"'+(s[key]===o.val?' selected':'')+'>'+o.label+'</option>'}).join('')+'</select></div>'};
   sb.innerHTML=
     '<div class="sg"><h4>Colors</h4>'+
-    colorRow('Background','bg')+
-    colorRow('Text','fg')+
-    colorRow('Dim / secondary text','dim')+
-    colorRow('Accent / links','accent')+
-    colorRow('Accent hover','accentHover')+
-    colorRow('Dividers','line')+
-    colorRow('Card background','cardBg')+
-    colorRow('Card border','cardBorder')+
-    colorRow('Input background','inputBg')+
-    colorRow('Input border','inputBorder')+
-    colorRow('Title bar background','barBg')+
-    colorRow('Title bar text','barFg')+
-    '</div>'+
+    colorRow('Background','bg')+colorRow('Text','fg')+colorRow('Dim text','dim')+
+    colorRow('Accent / links','accent')+colorRow('Accent hover','accentHover')+
+    colorRow('Dividers','line')+colorRow('Card bg','cardBg')+colorRow('Card border','cardBorder')+
+    colorRow('Input bg','inputBg')+colorRow('Input border','inputBorder')+
+    colorRow('Bar bg','barBg')+colorRow('Bar text','barFg')+'</div>'+
     '<div class="sg"><h4>Typography</h4>'+
-    selectRow('Font family','font',[
-      {val:'Courier New, monospace',label:'Courier New'},
-      {val:'Consolas, monospace',label:'Consolas'},
-      {val:'monospace',label:'Monospace (system)'},
-      {val:'Georgia, serif',label:'Georgia'},
-      {val:'Arial, sans-serif',label:'Arial'},
-      {val:'"Segoe UI", Arial, sans-serif',label:'Segoe UI'},
-      {val:'"Times New Roman", serif',label:'Times New Roman'},
-      {val:'"Roboto Mono", monospace',label:'Roboto Mono'},
-      {val:'"JetBrains Mono", monospace',label:'JetBrains Mono'},
-    ])+
+    selectRow('Font','font',[
+      {val:'Courier New, monospace',label:'Courier New'},{val:'Consolas, monospace',label:'Consolas'},
+      {val:'monospace',label:'Monospace'},{val:'Georgia, serif',label:'Georgia'},
+      {val:'Arial, sans-serif',label:'Arial'},{val:'"Segoe UI", Arial, sans-serif',label:'Segoe UI'},
+      {val:'"Times New Roman", serif',label:'Times New Roman'},{val:'"Roboto Mono", monospace',label:'Roboto Mono'},
+      {val:'"JetBrains Mono", monospace',label:'JetBrains Mono'}])+
     rangeRow('Font size (px)','fs','10','28','1','px')+
-    rangeRow('Line height','lh','1.0','2.5','0.1')+
-    '</div>'+
+    rangeRow('Line height','lh','1.0','2.5','0.1')+'</div>'+
     '<div class="sg"><h4>Layout</h4>'+
-    rangeRow('Padding horizontal (px)','padX','8','48','2','px')+
-    rangeRow('Padding vertical (px)','padY','4','32','2','px')+
-    rangeRow('Border radius (px)','radius','0','20','1','px')+
-    '</div>'+
+    rangeRow('Padding X (px)','padX','8','48','2','px')+
+    rangeRow('Padding Y (px)','padY','4','32','2','px')+
+    rangeRow('Border radius (px)','radius','0','20','1','px')+'</div>'+
     '<div class="sg"><button class="sreset" onclick="resetSettings()">Reset to defaults</button></div>';
   document.getElementById('overlay').classList.add('open');
   document.getElementById('settings').classList.add('open');
 }
-
 function updateSetting(key,val){
-  const s=loadSettings();s[key]=val;saveSettings(s);SETTINGS=s;applySettings(s);
+  var s=loadSettings();s[key]=val;saveSettings(s);SETTINGS=s;applySettings(s);
 }
-
 function closeSettings(){
   document.getElementById('settings').classList.remove('open');
   document.getElementById('overlay').classList.remove('open');
 }
-
 function resetSettings(){
   saveSettings(Object.assign({},DEFAULTS));SETTINGS=loadSettings();applySettings(SETTINGS);
-  const sb=document.getElementById('settingsBody');
-  document.querySelectorAll('#settingsBody input,#settingsBody select').forEach(el=>{
-    const match=el.id&&el.id.startsWith('v_')?null:el.getAttribute('onchange');
-    if(el.type==='color')el.value=DEFAULTS[el.getAttribute('onchange').match(/'([^']+)'/)[1]];
-  });
-  cmdSettings(); // Re-render
+  cmdSettings();
 }
 
 // ---- About ----
 function cmdAbout(){
   clearScr();
-  w('<div class="ah1">wik.sh v1.0</div>');
-  w('Wikipedia terminal — pure frontend search engine');
+  w('<div class="ah1">wik.sh</div>');
+  w('Wikipedia terminal -- pure frontend knowledge engine');
   line();
   w('Powered by the MediaWiki API',{d:true});
-  w('Reference: includes/Api/ApiOpenSearch.php',{d:true});
-  w('          includes/Api/ApiQuerySearch.php',{d:true});
-  w('          includes/Api/ApiQuery.php',{d:true});
+  w('Download articles (TXT/HTML/MD), download images, bookmarks, stats, TOC, find-in-article, export',{d:true});
   line();
-  w('Commands: help, search, open, read, random, more, back,',{d:true});
-  w('  images, links, categories, suggestions, geosearch, feed,',{d:true});
-  w('  featured, top, related, lang, history, settings, about',{d:true});
+  w('Commands: help, search, open, read, random, download, dlhtml, dlmd, dlimg,',{d:true});
+  w('  save, bookmarks, remove, stats, toc, find, export, images, links, categories,',{d:true});
+  w('  suggestions, geosearch, feed, featured, top, related, lang, history, settings, about',{d:true});
   line();
-  w('32 languages supported. Click any link to open inline.',{d:true});
-  w('Customize everything in Settings (or type "settings").',{d:true});
+  w('30+ languages supported. Click any link to open inline.',{d:true});
 }
 
 // ---- Autocomplete ----
 function showSuggest(input){
-  const parts=input.split(/\s+/);const partial=parts[parts.length-1].toLowerCase();
-  if(!partial||input.trim().length<2){suggest.classList.remove('active');return}
-  // Command suggestions for first word
+  var parts=input.split(/\s+/),partial=parts[parts.length-1].toLowerCase();
+  if(!partial||input.trim().length<2){suggestEl.classList.remove('active');return}
   if(parts.length===1){
-    const cmds=Object.keys({help:1,search:1,open:1,read:1,random:1,more:1,back:1,
-      clear:1,history:1,related:1,lang:1,top:1,images:1,links:1,categories:1,
-      suggestions:1,geosearch:1,feed:1,featured:1,settings:1,about:1})
-      .filter(c=>c.startsWith(partial)).sort();
+    var cmds=Object.keys({help:1,search:1,open:1,read:1,random:1,more:1,back:1,clear:1,history:1,related:1,lang:1,top:1,images:1,links:1,categories:1,suggestions:1,geosearch:1,feed:1,featured:1,settings:1,about:1,download:1,dlhtml:1,dlmd:1,dlimg:1,save:1,bookmarks:1,remove:1,stats:1,toc:1,find:1,export:1}).filter(function(c){return c.indexOf(partial)===0}).sort();
     if(cmds.length&&cmds.length<25){
-      suggest.innerHTML=cmds.map((c,i)=>'<div class="si" onclick="suggestPick(\''+c+'\')" onmouseenter="sugHL='+i+';renderSugHL()">'+c+'</div>').join('');
-      suggest.classList.add('active');sugHL=-1;return;
+      suggestEl.innerHTML=cmds.map(function(c,i){return '<div class="si" onclick="suggestPick(\''+c+'\')" onmouseenter="sugHL='+i+';renderSugHL()">'+c+'</div>'}).join('');
+      suggestEl.classList.add('active');sugHL=-1;return;
     }
   }
-  suggest.classList.remove('active');
+  suggestEl.classList.remove('active');
 }
-
-let sugHL=-1;
-function renderSugHL(){suggest.querySelectorAll('.si').forEach((el,i)=>el.classList.toggle('hl',i===sugHL))}
-function suggestPick(c){const parts=cmd.value.split(/\s+/);parts.pop();parts.push(c);cmd.value=parts.join(' ')+' ';suggest.classList.remove('active');cmd.focus()}
+var sugHL=-1;
+function renderSugHL(){suggestEl.querySelectorAll('.si').forEach(function(el,i){el.classList.toggle('hl',i===sugHL)})}
+function suggestPick(c){var p=cmdEl.value.split(/\s+/);p.pop();p.push(c);cmdEl.value=p.join(' ')+' ';suggestEl.classList.remove('active');cmdEl.focus()}
 
 // ---- Keyboard ----
-cmd.addEventListener('keydown',function(e){
-  if(e.key==='Enter'){e.preventDefault();const v=cmd.value.trim();cmd.value='';if(v)process(v)}
-  else if(e.key==='ArrowUp'){e.preventDefault();if(cmdHistory.length&&histIdx>0){histIdx--;cmd.value=cmdHistory[histIdx]}}
-  else if(e.key==='ArrowDown'){e.preventDefault();if(histIdx<cmdHistory.length-1){histIdx++;cmd.value=cmdHistory[histIdx]}else{histIdx=cmdHistory.length;cmd.value=''}}
-  else if(e.key==='Tab'){e.preventDefault();const val=cmd.value;const parts=val.split(/\s+/);const partial=parts[parts.length-1]||'';
-    const matches=Object.keys({help:1,search:1,open:1,read:1,random:1,more:1,back:1,
-      clear:1,history:1,related:1,lang:1,top:1,images:1,links:1,categories:1,
-      suggestions:1,geosearch:1,feed:1,featured:1,settings:1,about:1}).filter(c=>c.startsWith(partial));
-    if(matches.length===1){parts[parts.length-1]=matches[0];cmd.value=parts.join(' ')+' '}}
-  else if(e.key==='Escape'){suggest.classList.remove('active');cmd.blur()}
+cmdEl.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();var v=cmdEl.value.trim();cmdEl.value='';if(v)process(v)}
+  else if(e.key==='ArrowUp'){e.preventDefault();if(cmdHistory.length&&histIdx>0){histIdx--;cmdEl.value=cmdHistory[histIdx]}}
+  else if(e.key==='ArrowDown'){e.preventDefault();if(histIdx<cmdHistory.length-1){histIdx++;cmdEl.value=cmdHistory[histIdx]}else{histIdx=cmdHistory.length;cmdEl.value=''}}
+  else if(e.key==='Tab'){e.preventDefault();var val=cmdEl.value,parts=val.split(/\s+/),partial=parts[parts.length-1]||'';
+    var matches=Object.keys({help:1,search:1,open:1,read:1,random:1,more:1,back:1,clear:1,history:1,related:1,lang:1,top:1,images:1,links:1,categories:1,suggestions:1,geosearch:1,feed:1,featured:1,settings:1,about:1,download:1,dlhtml:1,dlmd:1,dlimg:1,save:1,bookmarks:1,remove:1,stats:1,toc:1,find:1,export:1}).filter(function(c){return c.indexOf(partial)===0});
+    if(matches.length===1){parts[parts.length-1]=matches[0];cmdEl.value=parts.join(' ')+' '}}
+  else if(e.key==='Escape'){suggestEl.classList.remove('active');cmdEl.blur()}
 });
-
-cmd.addEventListener('input',function(){showSuggest(cmd.value)});
-
+cmdEl.addEventListener('input',function(){showSuggest(cmdEl.value)});
 document.addEventListener('click',function(e){
-  if(!e.target.closest('#suggest')&&!e.target.closest('#cmd'))suggest.classList.remove('active');
+  if(!e.target.closest('#suggest')&&!e.target.closest('#cmd'))suggestEl.classList.remove('active');
 });
-
-// ---- Run command from click ----
-function runCmd(s){cmd.value=s;process(s)}
-
-// ---- Init ----
-splash.addEventListener('click',boot);
+function runCmd(s){cmdEl.value=s;process(s)}
+splashEl.addEventListener('click',boot);
 </script>
 </body>
 </html>
